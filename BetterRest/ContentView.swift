@@ -19,16 +19,24 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("When do you want to wake up?")) {
+                VStack(alignment: .leading) {
+                    Text("When do you want to wake up?")
+                        .font(.headline)
                     DatePicker("Wake up time", selection: $wakeUp, displayedComponents: .hourAndMinute)
                         .labelsHidden()
                 }
+                .padding(.vertical, 6)
                 
-                Section(header: Text("Desired amount of sleep")) {
+                VStack(alignment: .leading) {
+                    Text("Desired amount of sleep")
+                        .font(.headline)
                     Stepper("\(sleepAmount, specifier: "%g") hours", value: $sleepAmount, in: 4...12, step: 0.25)
                 }
+                .padding(.vertical, 6)
                 
-                Section(header: Text("Daily coffee intake")) {
+                VStack(alignment: .leading) {
+                    Text("Daily coffee intake")
+                        .font(.headline)
                     Stepper(value: $coffeeAmount, in: 1...20) {
                         if coffeeAmount == 1 {
                             Text("1 cup")
@@ -37,6 +45,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                .padding(.vertical, 6)
             }
             .navigationTitle("BetterRest")
             .navigationBarItems(trailing: Button("Calculate", action: calculateBedtime))
