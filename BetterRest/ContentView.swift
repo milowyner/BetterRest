@@ -12,14 +12,27 @@ struct ContentView: View {
     @State private var sleepAmount = 8.0
     @State private var coffeeAmount = 1
     
+    var wakeUpLabel: String {
+        "When do you want to wake up?"
+    }
+    
+    var hoursLabel: LocalizedStringKey {
+        "\(sleepAmount, specifier: "%g") hours"
+    }
+    
+    var cupsLabel: String {
+        coffeeAmount == 1 ? "1 cup" : "\(coffeeAmount) cups"
+    }
+    
     var body: some View {
         NavigationView {
             VStack {
                 Form {
                     VStack(alignment: .leading) {
-                        Text("When do you want to wake up?")
+                        Text(wakeUpLabel)
                             .font(.headline)
-                        DatePicker("Wake up time", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                            .accessibility(hidden: true)
+                        DatePicker(wakeUpLabel, selection: $wakeUp, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
                     .padding(.vertical, 6)
@@ -27,22 +40,22 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text("Desired amount of sleep")
                             .font(.headline)
-                        Stepper("\(sleepAmount, specifier: "%g") hours", value: $sleepAmount, in: 4...12, step: 0.25)
+                        Stepper(hoursLabel, value: $sleepAmount, in: 4...12, step: 0.25)
+                            .accessibility(label: Text(""))
                     }
                     .padding(.vertical, 6)
+                    .accessibilityElement(children: .combine)
+                    .accessibility(value: Text(hoursLabel))
                     
                     VStack(alignment: .leading) {
                         Text("Daily coffee intake")
                             .font(.headline)
-                        Stepper(value: $coffeeAmount, in: 1...20) {
-                            if coffeeAmount == 1 {
-                                Text("1 cup")
-                            } else {
-                                Text("\(coffeeAmount) cups")
-                            }
-                        }
+                        Stepper(cupsLabel, value: $coffeeAmount, in: 1...20)
+                            .accessibility(label: Text(""))
                     }
                     .padding(.vertical, 6)
+                    .accessibilityElement(children: .combine)
+                    .accessibility(value: Text(cupsLabel))
                 }
                 .navigationTitle("BetterRest")
                 
@@ -55,6 +68,8 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding()
+                .accessibilityElement(children: .ignore)
+                .accessibility(label: Text("Your ideal bedtime is \(bedtime)"))
             }
             
         }
